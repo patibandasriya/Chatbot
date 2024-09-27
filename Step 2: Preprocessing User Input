@@ -1,0 +1,24 @@
+Step 2: Preprocessing User Input
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+import numpy as np
+import random
+import json
+import tensorflow as tf
+from tensorflow import keras
+
+nltk.download('punkt')
+nltk.download('wordnet')
+
+# Initialize lemmatizer
+lemmatizer = WordNetLemmatizer()
+
+# Load intents
+with open('intents.json') as file:
+    intents = json.load(file)
+
+# Preprocessing function
+def preprocess(sentence):
+    tokens = word_tokenize(sentence)
+    return [lemmatizer.lemmatize(token.lower()) for token in tokens]
