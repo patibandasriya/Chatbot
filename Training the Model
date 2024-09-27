@@ -1,0 +1,29 @@
+Training the Model
+# Prepare training data
+training_sentences = []
+training_labels = []
+classes = []
+for intent in intents['intents']:
+    for pattern in intent['patterns']:
+        training_sentences.append(preprocess(pattern))
+        training_labels.append(intent['tag'])
+    if intent['tag'] not in classes:
+        classes.append(intent['tag'])
+
+# Encode the training labels
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+training_labels = label_encoder.fit_transform(training_labels)
+
+# Create a simple neural network model
+model = keras.Sequential([
+    keras.layers.Dense(128, activation='relu', input_shape=(len(training_sentences[0]),)),
+    keras.layers.Dense(64, activation='relu'),
+    keras.layers.Dense(len(classes), activation='softmax')
+])
+
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Train the model
+model.fit(np.array(training_sentences), np.array(training_labels), epochs=200)
+model.save('chatbot_model.h5')
